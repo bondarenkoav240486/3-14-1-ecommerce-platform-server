@@ -32,11 +32,12 @@ Relations:
 
 ## BasketDevice
 
-| Field    | Type    |
-| -------- | ------- |
-| id       | INTEGER |
-| basketId | INTEGER |
-| deviceId | INTEGER |
+| Field    | Type                    |
+| -------- | ----------------------- |
+| id       | INTEGER                 |
+| basketId | INTEGER                 |
+| deviceId | INTEGER                 |
+| quantity | INTEGER DEFAULT 1       |
 
 Relations:
 
@@ -126,3 +127,38 @@ Many-to-many relation table between Type and Brand.
 | id      | INTEGER |
 | typeId  | INTEGER |
 | brandId | INTEGER |
+
+
+## Order
+
+| Field      | Type                    |
+| ---------- | ----------------------- |
+| id         | INTEGER                 |
+| status     | STRING DEFAULT 'NEW'    |
+| totalPrice | INTEGER DEFAULT 0       |
+| userId     | INTEGER                 |
+
+Relations:
+
+* Order belongs to User
+* Order has many OrderItems
+
+---
+
+## OrderItem
+
+| Field    | Type              |
+| -------- | ----------------- |
+| id       | INTEGER           |
+| price    | INTEGER           |
+| quantity | INTEGER DEFAULT 1 |
+| orderId  | INTEGER           |
+| deviceId | INTEGER           |
+
+Relations:
+
+* OrderItem belongs to Order
+* OrderItem belongs to Device
+
+
+---
