@@ -25,7 +25,6 @@ class BasketService {
             throw ApiError.badRequest('Device not found');
         }
         
-
         const basketDevice = await BasketDevice.findOne({
             where: {
                 basketId: basket.id,
@@ -33,14 +32,12 @@ class BasketService {
             }
         });
         
-
         if (basketDevice) {
             basketDevice.quantity += 1;
             await basketDevice.save();
 
             return basketDevice;
         }
-
 
         const newBasketDevice = await BasketDevice.create({
             basketId: basket.id,
@@ -49,7 +46,6 @@ class BasketService {
         });
 
         return newBasketDevice;
-
     }
 }
 module.exports = new BasketService();
