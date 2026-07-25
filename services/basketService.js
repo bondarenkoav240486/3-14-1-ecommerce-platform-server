@@ -24,14 +24,14 @@ class BasketService {
         if (!device) {
             throw ApiError.badRequest('Device not found');
         }
-        
+
         const basketDevice = await BasketDevice.findOne({
             where: {
                 basketId: basket.id,
                 deviceId
             }
         });
-        
+
         if (basketDevice) {
             basketDevice.quantity += 1;
             await basketDevice.save();
@@ -46,6 +46,59 @@ class BasketService {
         });
 
         return newBasketDevice;
+    }
+
+    async get(req) {
+
+        const userId = req.user.id;
+
+        // const basket = await Basket.findOne({
+        //     where: {
+        //         userId
+        //     }
+        // });
+        // const basket = await Basket.findOne({
+        //     where: {
+        //         userId
+        //     },
+        //     include: [
+        //         {
+        //             model: BasketDevice
+        //         }
+        //     ]
+        // });
+        const basket = await Basket.findOne({
+            where: {
+                userId
+            },
+            include: [
+                {
+                    model: BasketDevice,
+                    include: [
+                        {
+                            model: Device
+                        }
+                    ]
+                }
+            ]
+        });
+        let totalPrice = 0;
+
+        basket.basket_devices.forEach(item => {
+            totalPrice += item.quantity * item.device.price;
+        });
+
+        if (!basket) {
+            throw ApiError.badRequest('Basket not found');
+        }
+
+        const result = basket.toJSON();
+
+        result.totalPrice = totalPrice;
+
+        return result;
+
+        return basket;
     }
 }
 module.exports = new BasketService();

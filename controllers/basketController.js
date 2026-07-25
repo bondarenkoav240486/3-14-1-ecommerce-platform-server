@@ -9,6 +9,16 @@ class BasketController {
             next(e);
         }
     }
+
+    async get(req, res, next) {
+        try {
+            const result = await basketService.get(req);
+
+            return res.json(result);
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 module.exports = new BasketController();

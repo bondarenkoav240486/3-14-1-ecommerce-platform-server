@@ -7,4 +7,5 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 
 router.post('/add', authMiddleware, basketController.add);
+router.get('/', authMiddleware, basketController.get);
 module.exports = router;
