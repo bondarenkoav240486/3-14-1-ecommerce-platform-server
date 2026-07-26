@@ -19,6 +19,15 @@ class BasketController {
             next(e);
         }
     }
+    async remove(req, res, next) {
+        try {
+            const basket = await basketService.remove(req);
+            console.log(`basket controller`)
+            return res.json(basket);
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 module.exports = new BasketController();
