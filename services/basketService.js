@@ -98,7 +98,7 @@ class BasketService {
         if (!basket) {
             throw ApiError.badRequest('Basket not found');
         }
-        
+
         const basketDevice = await BasketDevice.findOne({
             where: {
                 basketId: basket.id,
@@ -148,6 +148,19 @@ class BasketService {
         return result;
 
     }
+
+    async clear(req, res) {
+        const userId = req.user.id;
+        const basket = await Basket.findOne({ where: { userId: userId } });
+        if (!basket) {
+            throw ApiError.badRequest('Basket not found');
+        }
+        await BasketDevice.destroy({ where: { basketId: basket.id } });
+        return {
+            message: 'Basket cleared'
+        };
+    }
+
 }
 module.exports = new BasketService();
 
