@@ -26,6 +26,15 @@ class BasketController {
             next(e);
         }
     }
+    async removeAll(req, res, next) {
+        try {
+            const basket = await basketService.removeAll(req);
+            return res.json(basket);
+        } catch (e) {
+            next(e);
+        }
+
+    }
 
     async clear(req, res, next) {
         try {
@@ -103,6 +112,21 @@ class BasketController {
 
         return res.json(basket);
     }
+
+    async getSearchGoods(req, res, next) {
+        // const { idUser } = req.params
+        const idUser = 7;
+        let basket;
+        try {
+            basket = await Basket.findOne({ where: { userId: idUser } });
+        } catch (error) {
+            console.log(error.message);
+        }
+
+        return res.json(basket);
+    }
+
+
 }
 
 module.exports = new BasketController();

@@ -149,6 +149,50 @@ class BasketService {
 
     }
 
+    async removeAll(req) {
+        // const { idUser, idDevice } = req.body;
+        const userId = req.user.id;
+        const { deviceId } = req.body;
+        // const basket = await Basket.findOne({ where: { userId: idUser } });
+        const basket = await Basket.findOne({
+            where: { userId }
+        });
+        if (!basket) {
+            throw ApiError.badRequest('Basket not found');
+        }
+        const basketDevice = await BasketDevice.findOne({
+            where: {
+                basketId: basket.id,
+                deviceId
+            }
+        });
+        if (!basketDevice) {
+            throw ApiError.badRequest('Device not found in basket');
+        }
+        await basketDevice.destroy();
+        const updatedBasket = await Basket.findOne({
+            where: { userId },
+            include: [
+                {
+                    model: BasketDevice,
+                    include: [
+                        {
+                            model: Device
+                        }
+                    ]
+                }
+            ]
+        });
+        let totalPrice = 0;
+        updatedBasket.basket_devices.forEach(item => {
+            totalPrice += item.quantity * item.device.price;
+        });
+        const result = updatedBasket.toJSON();
+        result.totalPrice = totalPrice;
+        return result;
+    }
+
+
     async clear(req, res) {
         const userId = req.user.id;
         const basket = await Basket.findOne({ where: { userId: userId } });
